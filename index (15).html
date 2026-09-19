@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>120 Hours to CPhT — Audio Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EBF0EE; --card:#FFFFFF; --ink:#122420; --muted:#596965;
+    --teal:#0E5A54; --teal-2:#14847A; --teal-deep:#0A423E;
+    --amber:#E4A63E; --amber-deep:#C6821B; --line:#D6E0DC;
+    --shadow:0 1px 2px rgba(18,36,32,.06), 0 8px 24px rgba(18,36,32,.06);
+    --disp:'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+    --body:'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--paper); color:var(--ink); font-family:var(--body);
+    line-height:1.5; -webkit-font-smoothing:antialiased; padding:24px 16px 80px}
+  .wrap{max-width:720px; margin:0 auto}
+
+  /* Header */
+  header{display:flex; align-items:center; gap:14px; margin:8px 4px 22px}
+  .rx{width:46px; height:46px; flex:none; border-radius:13px;
+    background:linear-gradient(150deg,var(--teal-2),var(--teal-deep));
+    display:grid; place-items:center; color:#fff; font-family:var(--disp);
+    font-weight:700; font-size:22px; box-shadow:var(--shadow)}
+  header h1{font-family:var(--disp); font-weight:600; font-size:1.32rem;
+    letter-spacing:-.01em; margin:0; line-height:1.15}
+  header p{margin:2px 0 0; color:var(--muted); font-size:.86rem}
+
+  /* Player */
+  .player{background:linear-gradient(160deg,var(--teal),var(--teal-deep));
+    color:#fff; border-radius:20px; padding:22px 22px 20px; box-shadow:var(--shadow)}
+  .now-label{font-size:.72rem; letter-spacing:.06em; text-transform:none;
+    color:#9fd3cc; margin-bottom:2px}
+  .now-title{font-family:var(--disp); font-weight:600; font-size:1.12rem;
+    min-height:1.4em; letter-spacing:-.01em}
+
+  /* progress */
+  .bar{position:relative; height:8px; border-radius:99px;
+    background:rgba(255,255,255,.16); margin:18px 0 8px; cursor:pointer}
+  .fill{position:absolute; inset:0 auto 0 0; width:0%; border-radius:99px;
+    background:var(--amber)}
+  .knob{position:absolute; top:50%; left:0%; width:16px; height:16px;
+    background:#fff; border-radius:50%; transform:translate(-50%,-50%);
+    box-shadow:0 1px 4px rgba(0,0,0,.3); pointer-events:none}
+  .times{display:flex; justify-content:space-between; font-size:.78rem;
+    color:#bfe0da; font-variant-numeric:tabular-nums}
+
+  /* controls */
+  .controls{display:flex; align-items:center; justify-content:center;
+    gap:22px; margin:16px 0 6px}
+  .ctrl{background:none; border:none; color:#fff; cursor:pointer; padding:6px;
+    display:grid; place-items:center; border-radius:10px}
+  .ctrl svg{width:26px; height:26px; display:block}
+  .ctrl .lbl{font-size:.58rem; margin-top:1px; color:#bfe0da}
+  .ctrl:focus-visible{outline:2px solid var(--amber); outline-offset:2px}
+  .play{width:64px; height:64px; border-radius:50%; background:var(--amber);
+    color:var(--teal-deep); box-shadow:0 6px 16px rgba(0,0,0,.25)}
+  .play svg{width:30px; height:30px}
+  .play:hover{background:#efb457}
+
+  .speeds{display:flex; gap:6px; justify-content:center; margin-top:12px; flex-wrap:wrap}
+  .speed{font-family:var(--body); font-size:.8rem; font-weight:600;
+    color:#cfe8e3; background:rgba(255,255,255,.10); border:none; cursor:pointer;
+    padding:5px 11px; border-radius:99px}
+  .speed[aria-pressed="true"]{background:var(--amber); color:var(--teal-deep)}
+  .speed:focus-visible{outline:2px solid #fff; outline-offset:2px}
+
+  .missing{display:none; margin-top:14px; background:rgba(228,166,62,.15);
+    border:1px solid var(--amber); color:#ffe9c2; padding:11px 13px;
+    border-radius:12px; font-size:.84rem}
+  .missing code{background:rgba(0,0,0,.25); padding:1px 6px; border-radius:5px}
+
+  /* Sections */
+  .section-title{font-family:var(--disp); font-weight:600; font-size:.95rem;
+    margin:30px 6px 10px; display:flex; align-items:baseline; gap:10px}
+  .section-title span{font-size:.76rem; color:var(--muted); font-weight:500}
+  ol.chapters{list-style:none; margin:0; padding:0; background:var(--card);
+    border:1px solid var(--line); border-radius:16px; overflow:hidden; box-shadow:var(--shadow)}
+  ol.chapters li{display:flex; align-items:center; gap:14px; padding:13px 16px;
+    cursor:pointer; border-top:1px solid var(--line)}
+  ol.chapters li:first-child{border-top:none}
+  ol.chapters li:hover{background:#f4f8f6}
+  ol.chapters li.active{background:#e7f2ef}
+  ol.chapters li.active .c-title{color:var(--teal)}
+  .c-time{font-variant-numeric:tabular-nums; font-size:.8rem; color:var(--muted);
+    min-width:46px}
+  .c-dot{width:9px; height:9px; border-radius:50%; background:var(--line); flex:none}
+  ol.chapters li.active .c-dot{background:var(--amber)}
+  .c-title{font-size:.94rem; font-weight:500}
+
+  /* Transcript */
+  .tr-head{display:flex; align-items:center; justify-content:space-between;
+    margin:30px 6px 10px}
+  .tr-head h2{font-family:var(--disp); font-weight:600; font-size:.95rem; margin:0}
+  .toggle{font-size:.82rem; font-weight:600; color:var(--teal); background:none;
+    border:1px solid var(--line); border-radius:99px; padding:5px 13px; cursor:pointer}
+  .toggle:focus-visible{outline:2px solid var(--teal); outline-offset:2px}
+  #transcript{display:none}
+  #transcript.open{display:block}
+  .tblock{background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:6px 18px 16px; margin-bottom:12px; box-shadow:var(--shadow)}
+  .tblock > h3{font-family:var(--disp); font-weight:600; font-size:1rem;
+    margin:14px 0 6px; cursor:pointer; display:flex; gap:9px; align-items:baseline}
+  .tblock > h3 .t{font-size:.76rem; color:var(--muted); font-weight:500;
+    font-variant-numeric:tabular-nums}
+  .tblock.active{border-color:var(--amber)}
+  .tblock.active > h3{color:var(--teal)}
+  .tblock h4{font-family:var(--body); font-weight:600; font-size:.9rem;
+    margin:14px 0 4px; color:var(--ink)}
+  .tblock ul{margin:0 0 4px; padding-left:20px}
+  .tblock li{margin:3px 0; font-size:.9rem; color:#33403d}
+  .reading{font-size:.82rem; color:var(--teal); margin:4px 0 2px}
+
+  footer{text-align:center; color:var(--muted); font-size:.76rem; margin-top:34px}
+
+  @media (max-width:480px){
+    .controls{gap:16px}
+    header h1{font-size:1.15rem}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="rx" aria-hidden="true">℞</div>
+    <div>
+      <h1>120 Hours to CPhT</h1>
+      <p>Pharmacy Tech Scholar syllabus · audio study edition</p>
+    </div>
+  </header>
+
+  <section class="player" aria-label="Audio player">
+    <div class="now-label">Now playing</div>
+    <div class="now-title" id="nowTitle">Course Overview</div>
+
+    <div class="bar" id="bar" role="slider" aria-label="Seek" tabindex="0"
+         aria-valuemin="0" aria-valuenow="0">
+      <div class="fill" id="fill"></div>
+      <div class="knob" id="knob"></div>
+    </div>
+    <div class="times"><span id="cur">0:00</span><span id="dur">28:46</span></div>
+
+    <div class="controls">
+      <button class="ctrl" id="back" aria-label="Back 15 seconds">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round"><path d="M11 4 4 9l7 5"/><path d="M4 9h9a7 7 0 1 1-7 7"/></svg>
+        <span class="lbl">15s</span>
+      </button>
+      <button class="ctrl play" id="play" aria-label="Play">
+        <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4v16l13-8z"/></svg>
+      </button>
+      <button class="ctrl" id="fwd" aria-label="Forward 15 seconds">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round"><path d="M13 4l7 5-7 5"/><path d="M20 9h-9a7 7 0 1 0 7 7"/></svg>
+        <span class="lbl">15s</span>
+      </button>
+    </div>
+
+    <div class="speeds" id="speeds" aria-label="Playback speed">
+      <button class="speed" data-r="0.75">0.75×</button>
+      <button class="speed" data-r="1" aria-pressed="true">1×</button>
+      <button class="speed" data-r="1.25">1.25×</button>
+      <button class="speed" data-r="1.5">1.5×</button>
+      <button class="speed" data-r="2">2×</button>
+    </div>
+
+    <div class="missing" id="missing">
+      Audio file not found. Keep <code>CPhT_Syllabus_Audio.mp3</code> in the same
+      folder as this page.
+    </div>
+  </section>
+
+  <div class="section-title">Sections <span id="secCount"></span></div>
+  <ol class="chapters" id="chapters"></ol>
+
+  <div class="tr-head">
+    <h2>Transcript</h2>
+    <button class="toggle" id="trToggle" aria-expanded="false">Show</button>
+  </div>
+  <div id="transcript"></div>
+
+  <footer>Tap any section to jump there · space bar plays and pauses</footer>
+</div>
+
+<audio id="audio" src="CPhT_Syllabus_Audio.mp3" preload="metadata"></audio>
+
+<script>
+const DATA = {"total": 1726.75, "items": [{"title": "Course Overview", "start": 0.0, "html": "<p>This course provides the didactic education required for a Certified Pharmacy Technician, aligned with the 2026 exam content outline and the PTCB knowledge reference. It&#x27;s self-paced and module-based. To finish, complete every section, attest to the required readings, and pass each assessment with at least 80%. Exams are closed-book (calculator and scratch paper allowed).</p>"}, {"title": "Introduction", "start": 55.54, "html": "<h4>Course Introduction and Tutorial</h4><ul><li>Navigate the 120 Hours to CPhT course and its features.</li><li>Understand the steps required to complete the course.</li><li>Follow the Pharmacy Tech Scholar academic honesty policy.</li></ul><h4>Pharmacy Technician Career Overview</h4><ul><li>Describe the pharmacy technician role.</li><li>Explain the settings pharmacy technicians work in.</li><li>Discuss the skills needed to be competent in the role.</li><li>Understand the day to day activities of a pharmacy technician.</li><li>Identify future career prospects for pharmacy technicians.</li></ul><p class=\"reading\">Reading: Skills Building Manual, Chapter 1.</p><h4>Understanding the PTCE</h4><ul><li>Describe the exam&#x27;s format, timing, and content domains.</li><li>Identify eligibility pathways, application steps, and exam day requirements.</li><li>Calculate personal timelines for scheduling, rescheduling, or retaking the exam.</li><li>Evaluate official preparation resources and continuing education obligations for renewal.</li></ul><p class=\"reading\">Reading: the PTCB Guidebook.</p>"}, {"title": "Personal and Interpersonal Skills", "start": 132.32, "html": "<h4>Ethics and Professionalism in Pharmacy</h4><ul><li>Define ethics and explain its importance in pharmacy practice.</li><li>Identify key components of professional appearance and demeanor.</li><li>Relate ethical and professional guidelines to real world pharmacy scenarios.</li></ul><p class=\"reading\">Reading: Communication and Management Skills, Chapter 5.</p><h4>Effective Communication Skills</h4><ul><li>Identify key components of active and engaged listening.</li><li>Communicate clearly and effectively, both verbally and in writing.</li></ul><p class=\"reading\">Reading: Communication and Management Skills, Chapter 2.</p><h4>Cultural Competence in Pharmacy</h4><ul><li>Show a respectful, professional attitude with diverse patients, colleagues, and professionals.</li><li>Discuss how patient specific factors, such as cultural beliefs, disabilities, language barriers, and socioeconomic status, affect therapy.</li></ul><p class=\"reading\">Reading: Communication and Management Skills, Chapter 4.</p><h4>Interpersonal Skills</h4><ul><li>Explain key principles of time, stress, and change management in pharmacy settings.</li><li>Identify effective techniques in communication, teamwork, conflict resolution, negotiation, and customer service.</li><li>Describe problem solving steps for common pharmacy workplace scenarios.</li></ul><p class=\"reading\">Reading: Communication and Management Skills, Chapter 3.</p>"}, {"title": "Foundational Knowledge", "start": 234.34, "html": "<h4>Basic Anatomy and Physiology</h4><ul><li>Demonstrate basic knowledge of anatomy and physiology relevant to the technician&#x27;s role.</li></ul><p class=\"reading\">Reading: Complete Review, Chapter 1.</p><h4>Medical Terminology</h4><ul><li>Demonstrate basic knowledge of medical terminology relevant to the technician&#x27;s role.</li></ul><p class=\"reading\">Reading: Complete Review, Chapter 2.</p><h4>Basic Pharmacology</h4><ul><li>Describe the concept of medication.</li><li>Demonstrate basic knowledge of pharmacokinetics and pharmacodynamics.</li><li>Define key pharmacology terms.</li><li>Differentiate between prescription and over the counter medications and their labeling.</li></ul><p class=\"reading\">Reading: Complete Review, Chapter 1.</p>"}, {"title": "Medications", "start": 287.59, "html": "<h4>Introduction to Medications</h4><ul><li>Review medication naming conventions.</li><li>Define therapeutic equivalence and the requirements for that designation.</li><li>Identify resources used to determine equivalence.</li><li>Discuss generic product interchange and distinguish it from therapeutic interchange.</li><li>Describe how drugs are classified by mechanism and by indication.</li></ul><h4>Medication Dosage Forms</h4><ul><li>Define key terms such as dosage form, active ingredient, and excipient.</li><li>Describe the purpose of excipients.</li><li>Classify major categories of dosage forms: solids, semi solids, and liquids.</li><li>Identify characteristics of specific dosage forms such as tablets, capsules, and ointments.</li><li>Explain the importance of special formulations like modified release, delayed release, and enteric coatings.</li></ul><p class=\"reading\">Reading: Complete Review, Chapter 1.</p><h4>Medication Administration</h4><ul><li>Describe the various routes of medication administration and how they are performed.</li><li>Identify key equipment and supplies needed for different administration methods.</li><li>Explain special instructions or considerations for administration.</li><li>Relate dosage form characteristics to specific routes of administration.</li></ul><h4>Drug Storage, Stability, and Compatibility</h4><ul><li>Define key concepts related to medication stability and compatibility.</li><li>Explain proper storage requirements: refrigerated, room temperature, and protected from light.</li><li>Identify common compatibility issues in nonsterile and sterile preparations.</li><li>Describe how technicians prepare, store, and deliver medications requiring special handling.</li><li>Apply these concepts in scenario based practice.</li></ul><p class=\"reading\">Reading: Complete Review, Chapter 5.</p><h4>Drug Facts to Know</h4><ul><li>Explain why medication knowledge is critical for pharmacy technicians.</li><li>Identify the key areas of drug information tested on the exam.</li><li>Formulate a personal study strategy to master medication facts and classifications.</li></ul><p class=\"reading\">Reading: Quick Study Guide, Chapter 1.</p>"}, {"title": "Top 300 Drugs", "start": 438.22, "html": "<h4>Top 300 Drugs Modules \u2014 twenty four modules</h4><ul><li>For each module, associate generic names, brand names, and drug classifications.</li><li>Describe the indications for each medication.</li><li>Give examples of common or severe side effects and adverse effects.</li><li>Identify common or life threatening drug interactions and contraindications.</li></ul><p class=\"reading\">Reading: the quick reference guide supplied with each module.</p>"}, {"title": "Federal Requirements", "start": 471.57, "html": "<h4>Introduction to Pharmacy Law</h4><ul><li>Define the role of federal legislation in regulating pharmacy practice.</li><li>Identify key historical pharmacy laws that shape current practice.</li><li>Describe how federal, state, and local regulations interact, and why reconciling differences matters.</li></ul><p class=\"reading\">Reading: Complete Review, Chapter 3.</p><h4>Handling and Disposal of Pharmaceutical Substances</h4><ul><li>Identify key agencies that regulate pharmaceutical substances and wastes.</li><li>Describe requirements for safe storage, handling, and disposal of hazardous and non hazardous substances.</li><li>Explain how to locate and interpret information from Safety Data Sheets, NIOSH, and USP resources.</li><li>Apply the OSHA Hazard Communication Standard to real world scenarios.</li></ul><p class=\"reading\">Reading: Complete Review, Chapter 3.</p><h4>Controlled Substances</h4><ul><li>Describe why certain substances are controlled, based on abuse potential and medical use.</li><li>Identify the roles of the DEA and other organizations in regulating controlled substances.</li><li>Differentiate DEA Schedules one through five, with examples of each.</li><li>Explain the essential elements required on a controlled substance prescription.</li><li>Outline federal rules for refilling and transferring controlled substance prescriptions.</li></ul><h4>Controlled Substance Requirements</h4><ul><li>Identify federal requirements for receiving, storing, ordering, and dispensing controlled substances.</li><li>Explain proper handling of controlled substance returns, take back programs, and destruction.</li><li>Describe DEA documentation and recordkeeping, including retention length and verification of prescriber credentials.</li><li>Discuss how state prescription drug monitoring programs help mitigate abuse and diversion.</li><li>Demonstrate how to verify a prescriber&#x27;s DEA and NPI numbers electronically.</li></ul><p class=\"reading\">Reading: Complete Review, Chapter 3.</p><h4>Restricted Drug Programs</h4><ul><li>Define the purpose and scope of REMS, Risk Evaluation and Mitigation Strategies.</li><li>Identify the core components of REMS and high profile REMS programs.</li><li>Describe the technician&#x27;s responsibilities in managing REMS processes.</li><li>Explain the requirements of the Combat Meth Epidemic Act regarding pseudoephedrine.</li><li>Demonstrate procedures for verifying, documenting, and dispensing restricted medications.</li></ul><h4>Product Tracking, Tracing, and Recall</h4><ul><li>Define the FDA&#x27;s framework for medication recalls.</li><li>Describe requirements for product tracing and serialization under the DSCSA.</li><li>Explain the steps in executing internal and external drug recalls in a pharmacy.</li><li>Apply standardized procedures for product quarantining and communication, including drug shortages.</li></ul><p class=\"reading\">Reading: Complete Review, Chapter 5.</p><h4>Medication Accessibility, Availability, and Transferral</h4><ul><li>Describe ADA requirements that ensure accessible medications for patients with physical limitations.</li><li>Identify federal regulations distinguishing prescription, over the counter, and behind the counter medications.</li><li>Explain the process and legal considerations for transferring non controlled prescriptions.</li><li>Evaluate practical scenarios to determine appropriate accessibility accommodations.</li></ul><h4>Medication Information and Counseling</h4><ul><li>Define the FDA&#x27;s requirements for consumer medication information and Medication Guides.</li><li>Describe how OBRA ninety established consultation requirements and why they matter.</li><li>Explain the technician&#x27;s role in identifying patients who need or want counseling.</li><li>Apply effective communication strategies when interacting with patients or caregivers.</li></ul><h4>Patient Confidentiality</h4><ul><li>Describe the key federal privacy laws affecting technicians: HIPAA, HITECH, and 42 CFR Part 2.</li><li>Identify proper procedures for safeguarding Protected Health Information.</li><li>Apply confidentiality principles to common real world pharmacy scenarios.</li><li>Discuss how state level privacy laws may add additional requirements.</li></ul><p class=\"reading\">Reading: Communication and Management Skills, Chapter 6.</p>"}, {"title": "State Requirements", "start": 765.29, "html": "<h4>State Agencies and Technician Registration</h4><ul><li>Identify the primary state agencies that regulate pharmacy.</li><li>Describe the standard roles and functions of these agencies.</li><li>Explain the process for obtaining technician registration or licensure.</li><li>Summarize maintenance requirements, including continuing education and renewal.</li></ul><h4>Scope of Practice and Institutional Requirements</h4><ul><li>Define the roles and responsibilities of pharmacists, technicians, and other pharmacy employees.</li><li>Describe state requirements for pharmacy facilities, equipment, and supplies.</li><li>Compare how different states regulate technicians and medication handling.</li><li>Apply state laws to determine permissible technician tasks in realistic scenarios.</li></ul><h4>Pharmacy Operations Under State Law</h4><ul><li>Describe state requirements for medication access: prescription, over the counter, and behind the counter.</li><li>Explain state regulations for storage, handling, and disposal of medications and pharmaceutical waste.</li><li>Identify state specific controlled substance schedules and how they differ from federal schedules.</li><li>Outline state rules for ordering, receiving, labeling, dispensing, transferring, and destroying controlled substances.</li><li>Summarize recordkeeping and documentation requirements under state law.</li></ul>"}, {"title": "Patient Safety and Quality Assurance", "start": 863.04, "html": "<h4>High Alert and Look Alike Sound Alike Medications</h4><ul><li>Define high alert medications and explain why they pose increased risk to patients.</li><li>Identify examples of high alert medications across acute care, community, and long term care settings.</li><li>Describe strategies to mitigate risks associated with high alert medications.</li><li>Recognize look alike, sound alike medications and apply recommended Tall Man lettering.</li><li>Explain safe handling strategies to reduce these errors in practice.</li></ul><h4>Medication Errors</h4><ul><li>Define key terms such as adverse drug event and preventable adverse drug event.</li><li>Describe the medication use process and the Five Rights of medication administration.</li><li>Identify types of errors at each step of the medication use process.</li><li>Evaluate strategies for preventing medication errors.</li><li>Apply error prevention principles to real world technician scenarios.</li></ul><p class=\"reading\">Reading: Complete Review, Chapter 7.</p><h4>Event Reporting Procedures</h4><ul><li>Define key event reporting procedures for medication errors, adverse drug events, and near misses.</li><li>Describe how to report medication related incidents to internal systems and external agencies.</li><li>Apply root cause analysis principles to investigate and address errors.</li><li>Demonstrate a simulated response to a pharmacy error scenario.</li><li>Explain the technician&#x27;s role in fostering a culture of safety.</li></ul><h4>Identifying Issues That Require Pharmacist Intervention</h4><ul><li>Identify common red flags that indicate the need for a pharmacist&#x27;s clinical intervention.</li><li>Explain the technician&#x27;s role in recognizing and escalating Drug Utilization Review alerts and adverse drug events.</li><li>Demonstrate decision making with suspicious prescriptions, over the counter requests, and post immunization follow up.</li><li>Distinguish appropriate scenarios for therapeutic substitution and detect signs of drug misuse or non adherence.</li></ul><h4>Hygiene, Cleaning, and Infection Prevention</h4><ul><li>Define key cleaning standards for pharmacy equipment and work surfaces.</li><li>Describe proper hand hygiene and PPE use in compliance with OSHA and USP guidelines.</li><li>Explain how to implement infection control policies and procedures.</li><li>Demonstrate techniques for cleaning laminar flow hoods and biological safety cabinets.</li></ul><h4>Quality Assurance Practices</h4><ul><li>Describe the main information sources used in quality improvement initiatives.</li><li>Explain how to systematically evaluate dispensing and inventory control systems for potential errors.</li><li>Identify key strategies for error detection and reporting.</li><li>Discuss quality assurance applications to pharmaceuticals, devices, and supplies.</li><li>Outline best practices from ASHP, ISMP, USP, and the FDA.</li></ul><p class=\"reading\">Reading: Complete Review, Chapter 7.</p>"}, {"title": "Order Entry and Processing", "start": 1063.78, "html": "<h4>Non Sterile Compounding</h4><ul><li>Define nonsterile compounding and its purpose in pharmacy practice.</li><li>Explain the differences among simple, moderate, and complex nonsterile compounding.</li><li>Identify the technician&#x27;s responsibilities under USP Chapter 795 and ASHP standards.</li><li>Apply the fundamentals of selecting ingredients and bases appropriately.</li><li>Explain how beyond use dating and hygiene factor into nonsterile compounding.</li></ul><p class=\"reading\">Reading: Complete Review, Chapter 12.</p><h4>Sterile Compounding</h4><ul><li>Define the purpose and importance of sterile compounding.</li><li>Describe the basic facility requirements that ensure a sterile environment.</li><li>Identify key components of aseptic technique and contamination prevention.</li><li>Explain the differences among USP Chapter 797 Category one, two, and three preparations.</li><li>Summarize common sterile compounding errors and best practices to prevent them.</li></ul><p class=\"reading\">Reading: Complete Review, Chapter 13.</p><h4>Introduction to Pharmacy Information Systems</h4><ul><li>Define the core components and functions of a Pharmacy Information System.</li><li>Demonstrate accurate data entry and profile management.</li><li>Describe best practices for documenting the dispensing of medications, immunizations, and supplies.</li><li>Explain how system use aligns with safety standards and regulatory requirements.</li></ul><p class=\"reading\">Reading: Complete Review, Chapter 11.</p><h4>Interpreting a Prescription Order</h4><ul><li>Identify common sig codes, abbreviations, and roman numerals used in prescriptions.</li><li>Demonstrate methods for detecting forged or altered prescriptions.</li><li>Prioritize prescription processing by urgency: stat, waiting, and routine.</li><li>Verify prescription completeness, accuracy, and authenticity to meet legal requirements.</li></ul><p class=\"reading\">Reading: Complete Review, Chapter 10.</p><h4>Processing a Prescription Order</h4><ul><li>Explain how to stage prescriptions prior to the pharmacist&#x27;s final verification.</li><li>Demonstrate correct techniques for counting, measuring, and labeling patient specific medications.</li><li>Identify required patient information materials and how to assemble them for dispensing.</li></ul><p class=\"reading\">Reading: Complete Review, Chapter 10.</p><h4>Basic Math Operations</h4><ul><li>Apply the correct order of operations to solve pharmacy math expressions.</li><li>Convert between Arabic numbers and Roman numerals accurately.</li><li>Perform basic arithmetic with fractions and decimal fractions.</li><li>Transform fractions to decimals and decimals to fractions.</li></ul><p class=\"reading\">Reading: Math Review, Chapter 1.</p><h4>Units of Measurement and Conversions</h4><ul><li>Identify and differentiate the metric, apothecary, and avoirdupois systems.</li><li>Convert non metric units to metric units, and back, for volume, weight, and length.</li><li>Calculate temperature conversions between Celsius and Fahrenheit.</li><li>Convert between twelve hour and twenty four hour time formats.</li></ul><p class=\"reading\">Reading: Math Review, Chapter 2.</p><h4>Ratios, Proportions, and Percentages</h4><ul><li>Express fractions and decimals as ratios.</li><li>Perform ratio and proportion calculations.</li><li>Understand percent strength: weight in weight, volume in volume, and weight in volume.</li><li>Convert between ratios and percentages.</li></ul><p class=\"reading\">Reading: Math Review, Chapters 3 and 8.</p><h4>Pharmacy Calculation Concepts</h4><ul><li>Calculate doses or volumes based on a prescribed dose or concentration.</li><li>Perform weight based dose calculations for pediatric or adult patients.</li><li>Solve dry powder reconstitution problems, including displacement.</li><li>Determine infusion rates from medication orders.</li></ul><p class=\"reading\">Reading: Math Review, Chapters 6 and 7.</p><h4>Advanced Pharmacy Calculations</h4><ul><li>Determine the amount of stock solution required to prepare a dilution.</li><li>Perform dilutions of liquid, semisolid, and solid dosage forms.</li></ul><p class=\"reading\">Reading: Math Review, Chapter 9.</p><h4>Codes Used in Medication Packaging</h4><ul><li>Identify the purpose and regulations behind lot numbers, expiration dates, and National Drug Codes.</li><li>Explain how these codes protect patient safety and streamline workflow.</li><li>Apply best practices for documenting and verifying codes.</li><li>Evaluate scenarios where improper handling of codes can lead to serious errors.</li></ul><p class=\"reading\">Reading: Skills Building Manual, Chapter 3.</p><h4>Medication Expiration and Returns</h4><ul><li>Identify dispensable versus non dispensable medications and supplies.</li><li>Explain the regulatory requirements for handling expired medication.</li><li>Demonstrate correct procedures for returning expired or unusable products.</li><li>Differentiate between credit return, return to stock, and reverse distribution.</li><li>Discuss safe disposal methods for various medication categories.</li></ul><p class=\"reading\">Reading: Skills Building Manual, Chapter 5.</p>"}, {"title": "Inventory Management", "start": 1421.17, "html": "<h4>Medication Formularies</h4><ul><li>Define a medication formulary and explain its key purposes.</li><li>Describe the roles of Pharmacy and Therapeutics committees in managing formulary drugs.</li><li>Differentiate between open, closed, and tiered formulary designs.</li><li>Explain how technicians manage formulary issues in everyday practice.</li></ul><p class=\"reading\">Reading: Complete Review, Chapters 5 and 14.</p><h4>Equipment Used to Store Medications and Manage Inventory</h4><ul><li>Identify packaging and repackaging products such as IV bags, syringes, and child resistant containers.</li><li>Describe how quality control systems, like automated dispensing and barcoding, help prevent errors.</li><li>Explain how to select and maintain equipment for storing medications and managing inventory.</li><li>Demonstrate good decision making in real world inventory and storage scenarios.</li></ul><p class=\"reading\">Reading: Complete Review, Chapter 11, and the Skills Building Manual, Chapter 8.</p><h4>The Medication Ordering Process</h4><ul><li>Explain the standard process for ordering medications, devices, and supplies.</li><li>Describe alternatives to standard ordering, including borrowing or transferring.</li><li>Identify key regulatory and contractual requirements, including group purchasing organizations.</li><li>Show awareness of best practices for receiving and verifying shipments.</li></ul><p class=\"reading\">Reading: Complete Review, Chapter 4.</p><h4>Inventory Control Practices and Recordkeeping</h4><ul><li>Explain the steps to address temperature or humidity excursions.</li><li>Apply best practices in par level management, turnover, and perpetual inventory systems.</li><li>Perform physical inventories, including for controlled substances.</li><li>Identify just in time inventory principles and methods to prevent theft and diversion.</li><li>Demonstrate recordkeeping requirements for controlled substances and immunizations.</li></ul><p class=\"reading\">Reading: Complete Review, Chapter 4, and the Skills Building Manual, Chapter 5.</p>"}, {"title": "Miscellaneous Items", "start": 1564.29, "html": "<h4>Wellness and Disease Prevention</h4><ul><li>Describe major wellness promotion and disease prevention concepts.</li><li>Identify common monitoring and screening devices and their proper use.</li><li>Explain the adverse effects of tobacco, alcohol, and other drugs.</li><li>Understand technician roles and legal considerations in point of care testing.</li><li>Apply best practices in device maintenance to ensure accuracy and safety.</li></ul><p class=\"reading\">Reading: Complete Review, Chapter 9.</p><h4>Medication Management and Monitoring</h4><ul><li>Define medication adherence and explain its significance.</li><li>Identify strategies to assess patient compliance.</li><li>Explain the purpose of medication therapy monitoring.</li><li>Show familiarity with monitoring procedures and tools.</li><li>Apply this knowledge in real world scenarios.</li></ul><p class=\"reading\">Reading: Complete Review, Chapter 9.</p><h4>Emergency Preparedness</h4><ul><li>Identify signs and symptoms of common health emergencies.</li><li>Describe how technicians assist pharmacists safely and legally.</li><li>Apply key safety and emergency protocols in pharmacy settings.</li><li>Explain OSHA requirements for blood borne pathogen exposure.</li></ul><h4>Billing and Reimbursement</h4><ul><li>Define fundamental terms in pharmacy billing and reimbursement.</li><li>Describe the role of third party payers, pharmacy benefit managers, and government programs.</li><li>Identify key steps in the claim adjudication workflow and common rejection codes.</li><li>Explain reimbursement models such as AWP, MAC, and NADAC, and how copays and coinsurance apply.</li><li>Demonstrate how to resolve basic billing issues and coordinate benefits.</li></ul><p class=\"reading\">Reading: Complete Review, Chapter 14.</p><h4>Medication Reconciliation</h4><ul><li>Define the purpose and key steps of the medication reconciliation process.</li><li>Describe how technicians help pharmacists collect and verify medication lists.</li><li>Identify common medication discrepancies and how to flag them for resolution.</li><li>Apply reconciliation best practices across inpatient, outpatient, and long term care settings.</li><li>Evaluate the impact of strong medication reconciliation on patient safety and readmissions.</li></ul>"}, {"title": "Closing", "start": 1719.53, "html": "<p>That completes the outline. Good luck with your certification.</p>"}]};
+const audio = document.getElementById('audio');
+const $ = id => document.getElementById(id);
+const fmt = s => { s=Math.max(0,Math.floor(s||0)); const m=Math.floor(s/60);
+  return m+':'+String(s%60).padStart(2,'0'); };
+
+/* ---- build section list + transcript ---- */
+const items = DATA.items;
+$('secCount').textContent = '· ' + (items.length-1) + ' parts';
+const chEl = $('chapters');
+items.forEach((it,i)=>{
+  const li=document.createElement('li'); li.dataset.i=i;
+  li.innerHTML=`<span class="c-time">${fmt(it.start)}</span>
+    <span class="c-dot"></span><span class="c-title">${it.title}</span>`;
+  li.onclick=()=>seekTo(it.start,true);
+  chEl.appendChild(li);
+});
+const trEl=$('transcript');
+items.forEach((it,i)=>{
+  const b=document.createElement('div'); b.className='tblock'; b.dataset.i=i;
+  b.innerHTML=`<h3 data-s="${it.start}"><span class="t">${fmt(it.start)}</span>${it.title}</h3>${it.html}`;
+  b.querySelector('h3').onclick=()=>seekTo(it.start,true);
+  trEl.appendChild(b);
+});
+
+/* ---- controls ---- */
+let ready=false;
+function setPlayIcon(playing){
+  $('playIcon').innerHTML = playing
+    ? '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>'
+    : '<path d="M7 4v16l13-8z"/>';
+  $('play').setAttribute('aria-label', playing?'Pause':'Play');
+}
+function toggle(){ if(audio.paused) audio.play(); else audio.pause(); }
+$('play').onclick=toggle;
+$('back').onclick=()=>seekTo(audio.currentTime-15);
+$('fwd').onclick=()=>seekTo(audio.currentTime+15);
+audio.onplay=()=>setPlayIcon(true);
+audio.onpause=()=>setPlayIcon(false);
+
+function seekTo(t,play){ if(!isFinite(audio.duration)&&t>0){return;}
+  audio.currentTime=Math.max(0,t); if(play&&audio.paused)audio.play(); }
+
+/* speed */
+let savedRate=1;
+try{ savedRate=parseFloat(localStorage.getItem('cpht_rate'))||1; }catch(e){}
+function setRate(r){ audio.playbackRate=r;
+  document.querySelectorAll('.speed').forEach(b=>
+    b.setAttribute('aria-pressed', b.dataset.r==r));
+  try{ localStorage.setItem('cpht_rate',r); }catch(e){} }
+document.querySelectorAll('.speed').forEach(b=>b.onclick=()=>setRate(parseFloat(b.dataset.r)));
+
+/* progress bar */
+const bar=$('bar');
+function barSeek(clientX){ const r=bar.getBoundingClientRect();
+  const f=Math.min(1,Math.max(0,(clientX-r.left)/r.width));
+  if(isFinite(audio.duration)) audio.currentTime=f*audio.duration; }
+bar.onclick=e=>barSeek(e.clientX);
+let dragging=false;
+bar.onpointerdown=e=>{dragging=true; bar.setPointerCapture(e.pointerId); barSeek(e.clientX);};
+bar.onpointermove=e=>{if(dragging)barSeek(e.clientX);};
+bar.onpointerup=()=>dragging=false;
+
+/* time + active highlight */
+function activeIndex(t){ let idx=0;
+  for(let i=0;i<items.length;i++){ if(t>=items[i].start-0.05) idx=i; } return idx; }
+let lastIdx=-1;
+audio.ontimeupdate=()=>{
+  const t=audio.currentTime, d=audio.duration||DATA.total;
+  const pct=d? (t/d*100):0;
+  $('fill').style.width=pct+'%'; $('knob').style.left=pct+'%';
+  $('cur').textContent=fmt(t);
+  bar.setAttribute('aria-valuenow',Math.floor(t));
+  const idx=activeIndex(t);
+  if(idx!==lastIdx){ lastIdx=idx;
+    $('nowTitle').textContent=items[idx].title;
+    document.querySelectorAll('#chapters li').forEach((li,i)=>
+      li.classList.toggle('active',i===idx));
+    document.querySelectorAll('.tblock').forEach((b,i)=>
+      b.classList.toggle('active',i===idx));
+  }
+  try{ localStorage.setItem('cpht_pos',t); }catch(e){}
+};
+audio.onloadedmetadata=()=>{ ready=true; $('dur').textContent=fmt(audio.duration);
+  setRate(savedRate);
+  try{ const p=parseFloat(localStorage.getItem('cpht_pos'));
+    if(p>3 && p<audio.duration-3) audio.currentTime=p; }catch(e){}
+};
+audio.onerror=()=>{ $('missing').style.display='block'; };
+
+/* transcript toggle */
+$('trToggle').onclick=()=>{ const open=trEl.classList.toggle('open');
+  $('trToggle').textContent=open?'Hide':'Show';
+  $('trToggle').setAttribute('aria-expanded',open); };
+
+/* keyboard */
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='BUTTON'&&e.key==='Enter')return;
+  if(e.code==='Space'){e.preventDefault();toggle();}
+  else if(e.code==='ArrowLeft')seekTo(audio.currentTime-10);
+  else if(e.code==='ArrowRight')seekTo(audio.currentTime+10);
+});
+setRate(savedRate);
+</script>
+</body>
+</html>

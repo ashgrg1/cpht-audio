@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invoice Tracker</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .header { text-align: center; padding: 20px 0 16px; }
+  .header h1 { font-size: 1.9rem; color: #38bdf8; letter-spacing: 1px; }
+  .header p  { color: #94a3b8; font-size: 0.88rem; margin-top: 4px; }
+
+  /* KPI */
+  .kpi-row { display: flex; gap: 14px; margin: 20px 0; flex-wrap: wrap; }
+  .kpi-card {
+    background: #1e293b; border-radius: 12px; padding: 16px 20px;
+    flex: 1; min-width: 130px; text-align: center; border: 1px solid #334155;
+  }
+  .kpi-card .val { font-size: 1.7rem; font-weight: 700; }
+  .kpi-card .lbl { font-size: 0.72rem; color: #94a3b8; margin-top: 3px; text-transform: uppercase; }
+  .blue   .val { color: #38bdf8; }
+  .green  .val { color: #22c55e; }
+  .orange .val { color: #f97316; }
+  .red    .val { color: #ef4444; }
+
+  /* Toolbar */
+  .toolbar {
+    display: flex; gap: 10px; margin-bottom: 14px;
+    flex-wrap: wrap; justify-content: space-between; align-items: center;
+  }
+  .toolbar-left, .toolbar-right { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+  .search-box {
+    background: #1e293b; border: 1px solid #334155; color: #e2e8f0;
+    padding: 7px 12px; border-radius: 8px; font-size: 0.88rem; width: 200px;
+  }
+  .search-box:focus { outline: none; border-color: #38bdf8; }
+
+  select.filter {
+    background: #1e293b; border: 1px solid #334155; color: #e2e8f0;
+    padding: 7px 12px; border-radius: 8px; font-size: 0.88rem;
+  }
+
+  button {
+    padding: 7px 14px; border: none; border-radius: 8px;
+    font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s;
+    white-space: nowrap;
+  }
+  button:hover { opacity: 0.82; }
+
+  .btn-add    { background: #059669; color: #fff; }
+  .btn-csv    { background: #d97706; color: #fff; }
+  .btn-print  { background: #0f766e; color: #fff; }
+  .btn-del    { background: #dc2626; color: #fff; padding: 3px 9px; font-size: 0.78rem; }
+
+  /* Add Form */
+  .add-form {
+    background: #1e293b; border: 1px solid #334155; border-radius: 12px;
+    padding: 16px; margin-bottom: 16px; display: none; flex-wrap: wrap; gap: 10px;
+  }
+  .add-form.open { display: flex; }
+  .add-form label { font-size: 0.78rem; color: #94a3b8; display: block; margin-bottom: 4px; }
+  .add-form input, .add-form select {
+    background: #0f172a; border: 1px solid #334155; color: #e2e8f0;
+    padding: 7px 10px; border-radius: 7px; font-size: 0.88rem; width: 160px;
+  }
+  .add-form input:focus, .add-form select:focus { outline: none; border-color: #38bdf8; }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid #1e293b; }
+  table { width: 100%; border-collapse: collapse; min-width: 800px; }
+  thead { background: #1e293b; }
+  thead th {
+    padding: 11px 10px; text-align: left; font-size: 0.75rem;
+    text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8; white-space: nowrap;
+  }
+  tbody tr { border-bottom: 1px solid #1e293b; transition: background 0.15s; }
+  tbody tr:hover { background: #1e293b55; }
+  tbody td { padding: 8px 10px; font-size: 0.88rem; vertical-align: middle; }
+
+  tbody td input, tbody td select {
+    background: transparent; border: 1px solid transparent; color: #e2e8f0;
+    padding: 4px 7px; border-radius: 6px; font-size: 0.88rem; width: 100%;
+  }
+  tbody td input:focus, tbody td select:focus { outline: none; border-color: #38bdf8; background: #1e293b; }
+  tbody td select { background: #0f172a; }
+
+  .badge {
+    display: inline-block; padding: 3px 10px; border-radius: 20px;
+    font-size: 0.75rem; font-weight: 600; white-space: nowrap;
+  }
+  .badge-paid     { background: #14532d; color: #4ade80; }
+  .badge-unpaid   { background: #431407; color: #f97316; }
+  .badge-overdue  { background: #450a0a; color: #ef4444; }
+  .badge-draft    { background: #1e293b; color: #94a3b8; border: 1px solid #334155; }
+
+  .amount { font-weight: 700; color: #38bdf8; }
+
+  .footer-btns {
+    margin-top: 22px; display: flex; gap: 12px;
+    justify-content: center; flex-wrap: wrap;
+  }
+  .footer-btns button { padding: 11px 26px; font-size: 0.92rem; }
+
+  .toast {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+    background: #059669; color: #fff; padding: 10px 24px; border-radius: 10px;
+    font-weight: 600; font-size: 0.9rem; display: none; z-index: 999;
+  }
+
+  @media print {
+    body { background: #fff; color: #000; }
+    .no-print { display: none !important; }
+    table { border: 1px solid #ccc; }
+    thead { background: #f1f5f9; }
+    thead th { color: #333; }
+    tbody tr { border-bottom: 1px solid #e2e8f0; }
+    .amount { color: #000; }
+    .badge-paid    { background: #dcfce7; color: #166534; }
+    .badge-unpaid  { background: #fff7ed; color: #9a3412; }
+    .badge-overdue { background: #fef2f2; color: #991b1b; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Invoice Tracker</h1>
+  <p>Track all your invoices, payments, and outstanding balances</p>
+</div>
+
+<!-- KPI Cards -->
+<div class="kpi-row">
+  <div class="kpi-card blue">
+    <div class="val" id="kpiTotal">$0</div>
+    <div class="lbl">Total Invoiced</div>
+  </div>
+  <div class="kpi-card green">
+    <div class="val" id="kpiPaid">$0</div>
+    <div class="lbl">Total Paid</div>
+  </div>
+  <div class="kpi-card orange">
+    <div class="val" id="kpiUnpaid">$0</div>
+    <div class="lbl">Unpaid</div>
+  </div>
+  <div class="kpi-card red">
+    <div class="val" id="kpiOverdue">$0</div>
+    <div class="lbl">Overdue</div>
+  </div>
+</div>
+
+<!-- Toolbar -->
+<div class="toolbar no-print">
+  <div class="toolbar-left">
+    <input type="text" class="search-box" id="searchBox" placeholder="Search client or invoice..." oninput="renderTable()">
+    <select class="filter" id="filterStatus" onchange="renderTable()">
+      <option value="">All Status</option>
+      <option value="Draft">Draft</option>
+      <option value="Unpaid">Unpaid</option>
+      <option value="Paid">Paid</option>
+      <option value="Overdue">Overdue</option>
+    </select>
+  </div>
+  <div class="toolbar-right">
+    <button class="btn-add" onclick="toggleForm()">+ New Invoice</button>
+    <button class="btn-csv"   onclick="downloadCSV()">Download CSV</button>
+    <button class="btn-print" onclick="window.print()">Print / PDF</button>
+  </div>
+</div>
+
+<!-- Add Form -->
+<div class="add-form no-print" id="addForm">
+  <div>
+    <label>Invoice #</label>
+    <input type="text" id="newNum" placeholder="INV-001">
+  </div>
+  <div>
+    <label>Client Name</label>
+    <input type="text" id="newClient" placeholder="John Smith">
+  </div>
+  <div>
+    <label>Service</label>
+    <input type="text" id="newService" placeholder="Data Analysis">
+  </div>
+  <div>
+    <label>Amount ($)</label>
+    <input type="number" id="newAmount" placeholder="0.00" min="0" step="0.01">
+  </div>
+  <div>
+    <label>Invoice Date</label>
+    <input type="date" id="newDate">
+  </div>
+  <div>
+    <label>Due Date</label>
+    <input type="date" id="newDue">
+  </div>
+  <div>
+    <label>Status</label>
+    <select id="newStatus">
+      <option>Draft</option>
+      <option>Unpaid</option>
+      <option>Paid</option>
+      <option>Overdue</option>
+    </select>
+  </div>
+  <div>
+    <label>&nbsp;</label>
+    <button class="btn-add" onclick="addInvoice()">Add Invoice</button>
+  </div>
+</div>
+
+<!-- Table -->
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Invoice #</th>
+        <th>Client</th>
+        <th>Service</th>
+        <th>Amount</th>
+        <th>Invoice Date</th>
+        <th>Due Date</th>
+        <th>Status</th>
+        <th>Notes</th>
+        <th class="no-print">Actions</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+</div>
+
+<div class="footer-btns no-print">
+  <button class="btn-add" onclick="saveData()">Save</button>
+  <button class="btn-print" onclick="window.print()">Print / PDF</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY = 'invoice-tracker-v1';
+let invoices = [];
+let nextNum = 1;
+
+function init() {
+  load();
+  if (!invoices.length) loadDefaults();
+  renderAll();
+}
+
+function loadDefaults() {
+  const today = new Date().toISOString().split('T')[0];
+  invoices = [
+    { num:'INV-001', client:'ABC Store',      service:'Data Analysis',    amount:75,  date:'2026-06-01', due:'2026-06-15', status:'Paid',    notes:'' },
+    { num:'INV-002', client:'Main St Diner',  service:'Inventory Sheet',  amount:50,  date:'2026-06-10', due:'2026-06-24', status:'Unpaid',  notes:'' },
+    { num:'INV-003', client:'Corner Market',  service:'Order Dashboard',  amount:100, date:'2026-06-20', due:'2026-07-04', status:'Overdue', notes:'Follow up needed' },
+    { num:'INV-004', client:'City Salon',     service:'Customer Tracker', amount:60,  date:'2026-06-28', due:'2026-07-12', status:'Draft',   notes:'' },
+  ];
+  nextNum = 5;
+}
+
+function renderAll() {
+  renderTable();
+  updateKPI();
+}
+
+function renderTable() {
+  const search = document.getElementById('searchBox').value.toLowerCase();
+  const statusF = document.getElementById('filterStatus').value;
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = '';
+
+  invoices.forEach((inv, i) => {
+    if (search && !inv.client.toLowerCase().includes(search) && !inv.num.toLowerCase().includes(search)) return;
+    if (statusF && inv.status !== statusF) return;
+
+    const badgeClass = {
+      'Paid':'badge-paid', 'Unpaid':'badge-unpaid',
+      'Overdue':'badge-overdue', 'Draft':'badge-draft'
+    }[inv.status] || 'badge-draft';
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input type="text" value="${esc(inv.num)}" onchange="invoices[${i}].num=this.value"></td>
+      <td><input type="text" value="${esc(inv.client)}" onchange="invoices[${i}].client=this.value"></td>
+      <td><input type="text" value="${esc(inv.service)}" onchange="invoices[${i}].service=this.value"></td>
+      <td><input type="number" value="${inv.amount}" onchange="invoices[${i}].amount=+this.value;updateKPI()" step="0.01" style="width:80px"> </td>
+      <td><input type="date" value="${inv.date}" onchange="invoices[${i}].date=this.value"></td>
+      <td><input type="date" value="${inv.due}" onchange="invoices[${i}].due=this.value"></td>
+      <td>
+        <select onchange="invoices[${i}].status=this.value;renderAll()">
+          ${['Draft','Unpaid','Paid','Overdue'].map(s=>`<option value="${s}"${inv.status===s?' selected':''}>${s}</option>`).join('')}
+        </select>
+      </td>
+      <td><input type="text" value="${esc(inv.notes)}" onchange="invoices[${i}].notes=this.value" placeholder="Notes..."></td>
+      <td class="no-print">
+        <button class="btn-del" onclick="delInvoice(${i})">Del</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function updateKPI() {
+  let total = 0, paid = 0, unpaid = 0, overdue = 0;
+  invoices.forEach(inv => {
+    const a = +inv.amount || 0;
+    total += a;
+    if (inv.status === 'Paid')    paid    += a;
+    if (inv.status === 'Unpaid')  unpaid  += a;
+    if (inv.status === 'Overdue') overdue += a;
+  });
+  document.getElementById('kpiTotal').textContent   = '$' + total.toFixed(2);
+  document.getElementById('kpiPaid').textContent    = '$' + paid.toFixed(2);
+  document.getElementById('kpiUnpaid').textContent  = '$' + unpaid.toFixed(2);
+  document.getElementById('kpiOverdue').textContent = '$' + overdue.toFixed(2);
+}
+
+function toggleForm() {
+  const f = document.getElementById('addForm');
+  f.classList.toggle('open');
+  if (f.classList.contains('open')) {
+    document.getElementById('newNum').value = 'INV-00' + nextNum;
+    document.getElementById('newDate').value = new Date().toISOString().split('T')[0];
+    document.getElementById('newClient').focus();
+  }
+}
+
+function addInvoice() {
+  const client = document.getElementById('newClient').value.trim();
+  if (!client) { alert('Please enter a client name.'); return; }
+  invoices.push({
+    num:     document.getElementById('newNum').value     || 'INV-00' + nextNum,
+    client,
+    service: document.getElementById('newService').value || '',
+    amount:  +document.getElementById('newAmount').value || 0,
+    date:    document.getElementById('newDate').value    || '',
+    due:     document.getElementById('newDue').value     || '',
+    status:  document.getElementById('newStatus').value  || 'Unpaid',
+    notes:   ''
+  });
+  nextNum++;
+  document.getElementById('newClient').value  = '';
+  document.getElementById('newService').value = '';
+  document.getElementById('newAmount').value  = '';
+  document.getElementById('newDue').value     = '';
+  saveData();
+  renderAll();
+  toast('Invoice added!');
+}
+
+function delInvoice(i) {
+  if (confirm('Delete invoice "' + invoices[i].num + '"?')) {
+    invoices.splice(i, 1);
+    renderAll();
+    saveData();
+  }
+}
+
+function saveData() {
+  localStorage.setItem(KEY, JSON.stringify({ invoices, nextNum }));
+  toast('Saved!');
+}
+
+function load() {
+  const raw = localStorage.getItem(KEY);
+  if (!raw) return;
+  try {
+    const d = JSON.parse(raw);
+    invoices = d.invoices || [];
+    nextNum  = d.nextNum  || invoices.length + 1;
+  } catch(e) {}
+}
+
+function downloadCSV() {
+  let csv = 'Invoice #,Client,Service,Amount,Invoice Date,Due Date,Status,Notes\n';
+  invoices.forEach(inv => {
+    csv += `"${inv.num}","${inv.client}","${inv.service}",${inv.amount},"${inv.date}","${inv.due}","${inv.status}","${inv.notes}"\n`;
+  });
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'invoices-' + new Date().toISOString().split('T')[0] + '.csv';
+  a.click();
+  toast('CSV downloaded!');
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 2500);
+}
+
+function esc(s) {
+  return String(s || '').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+}
+
+init();
+</script>
+</body>
+</html>
